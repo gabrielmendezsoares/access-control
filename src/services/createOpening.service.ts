@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { HttpClientUtil, BasicAndBearerStrategy, BearerStrategy } from "../../expressium/src/index.js";
-import { IReqBody, IResponse, IResponseData } from "../interfaces/index.js";
+import { HttpClientUtil, BearerStrategy } from "../../expressium/src/index.js";
+import { IAccountMap, IPartitionMap, IReqBody, IResponse, IResponseData } from "./interfaces/index.js";
 
 const EVENT_ID = '167618000';
-const CODE = 'H417';
 const PROTOCOL_TYPE = 'CONTACT_ID';
 
 export const createOpening = async (
@@ -14,14 +13,15 @@ export const createOpening = async (
 ): Promise<IResponse.IResponse<IResponseData.ICreateOpeningResponseData | IResponseData.IResponseData>> => { 
   try {
     const { 
-      account,
-      companyId,
+      accountId,
+      code,
       complement,
-      partition,
+      partitionId,
+      receiverDescription,
       server
     } = req.body as IReqBody.IcreateOpeningReqBody;
 
-    if (!account || !companyId || !complement || !partition || !server) {
+    if (!accountId || !code || !complement || !partitionId || !receiverDescription || !server) {
       return {
         status: 400,
         data: {
@@ -34,15 +34,59 @@ export const createOpening = async (
           headers: req.headers,
           body: req.body,
           message: 'Missing required fields.',
-          suggestion: 'Please provide all required fields: account, companyId, complement, partition and server.'
+          suggestion: 'Please provide all required fields: accountId, code, complement, partitionId, receiverDescription and server.'
         }
       };
     }
 
     const httpClientInstance = new HttpClientUtil.HttpClient();
 
-    const response = await httpClientInstance.get<unknown>(`${ process.env.BASE_URL as string }:${ server }/conversor_get_post/portao/open/${ account }/${ partition }`);
+    httpClientInstance.setAuthenticationStrategy(new BearerStrategy.BearerStrategy(process.env.SIGMA_CLOUD_BEARER_TOKEN as string));
 
+    const accountMap = (await httpClientInstance.get<IAccountMap.IAccountMap>(`https://api.segware.com.br/v5/accounts/${ accountId }`)).data;
+
+    if (!accountMap) {
+      return {
+        status: 404,
+        data: {
+          timestamp,
+          status: false,
+          statusCode: 404,
+          method: req.method,
+          path: req.originalUrl || req.url,
+          query: req.query,
+          headers: req.headers,
+          body: req.body,
+          message: 'Account not found.',
+          suggestion: 'Please check the accountId and try again.'
+        }
+      };
+    }
+
+    const partitionMap = accountMap.partitions.find((partitionMap: IPartitionMap.IPartitionMap): boolean => partitionMap.id === partitionId);
+
+    if (!partitionMap) {
+      return {
+        status: 404,
+        data: {
+          timestamp,
+          status: false,
+          statusCode: 404,
+          method: req.method,
+          path: req.originalUrl || req.url,
+          query: req.query,
+          headers: req.headers,
+          body: req.body,
+          message: 'Partition not found.',
+          suggestion: 'Please check the partitionId and try again.'
+        }
+      };
+    }
+    
+    httpClientInstance.clearAuthenticationStrategy();
+    
+    const response = await httpClientInstance.get<unknown>(`${ process.env.BASE_URL as string }:${ server }/conversor_get_post/portao/open/${ accountMap.accountCode }/${ parseInt(partitionMap.number, 10) }`);
+    
     httpClientInstance.setAuthenticationStrategy(new BearerStrategy.BearerStrategy(process.env.SIGMA_CLOUD_BEARER_TOKEN as string));
     
     await httpClientInstance.post<unknown>(
@@ -50,13 +94,14 @@ export const createOpening = async (
       { 
         events: [
           {
-            account,
-            code: CODE,
-            companyId,
-            complement,
+            account: accountMap.accountCode,
+            code,
+            companyId: accountMap.companyId,
+            complement: `Nome da Partição: ${ partitionMap.description }, Complemento: ${ complement }`,
             eventId: EVENT_ID,
-            partition,
-            protocolType: PROTOCOL_TYPE
+            partition: partitionMap.number,
+            protocolType: PROTOCOL_TYPE,
+            receiverDescription
           }
         ] 
       }
