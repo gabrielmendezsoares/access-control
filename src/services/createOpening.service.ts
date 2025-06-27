@@ -97,7 +97,7 @@ export const createOpening = async (
             account: accountMap.accountCode,
             code,
             companyId: accountMap.companyId,
-            complement: `Nome da Partição: ${ partitionMap.description }, Complemento: ${ complement }`,
+            complement: `Nome: ${ partitionMap.description }, Complemento: ${ complement }`,
             eventId: EVENT_ID,
             partition: partitionMap.number,
             protocolType: PROTOCOL_TYPE,
