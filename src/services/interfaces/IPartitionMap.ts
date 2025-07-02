@@ -1,5 +1,4 @@
-export interface IPartitionMap { 
-  description: string;
+export interface IPartitionMap {
   id: number;
   number: string;
 }

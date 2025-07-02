@@ -4,5 +4,6 @@ export interface IcreateOpeningReqBody {
   complement: string;
   partitionId: number;
   receiverDescription: string;
+  receiverId: number;
   server: string;
 }
