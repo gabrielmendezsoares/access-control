@@ -1,4 +1,4 @@
 export interface IAccountMap { 
   accountCode: string;
-  companyId: string;
+  companyId: number;
 }
