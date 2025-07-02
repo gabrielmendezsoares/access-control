@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { HttpClientUtil, BearerStrategy } from "../../expressium/src/index.js";
-import { IAccountMap, IPartitionMap, IReqBody, IResponse, IResponseData } from "./interfaces/index.js";
+import { HttpClientUtil, BasicAndBearerStrategy, BearerStrategy } from "../../expressium/src/index.js";
+import { IAccountMap, IPartitionMap, IReceiverMap, IReqBody, IResponse, IResponseData } from "./interfaces/index.js";
 
 const EVENT_ID = '167618000';
 const PROTOCOL_TYPE = 'CONTACT_ID';
@@ -18,10 +18,11 @@ export const createOpening = async (
       complement,
       partitionId,
       receiverDescription,
+      receiverId,
       server
     } = req.body as IReqBody.IcreateOpeningReqBody;
 
-    if (!accountId || !code || !complement || !partitionId || !receiverDescription || !server) {
+    if (!accountId || !code || !complement || partitionId || !receiverDescription || !receiverId || !server) {
       return {
         status: 400,
         data: {
@@ -34,7 +35,7 @@ export const createOpening = async (
           headers: req.headers,
           body: req.body,
           message: 'Missing required fields.',
-          suggestion: 'Please provide all required fields: accountId, code, complement, partitionId, receiverDescription and server.'
+          suggestion: 'Please provide all required fields: accountId, code, complement, partitionId, receiverDescription, receiverId and server.'
         }
       };
     }
@@ -82,6 +83,39 @@ export const createOpening = async (
         }
       };
     }
+
+    httpClientInstance.setAuthenticationStrategy(
+      new BasicAndBearerStrategy.BasicAndBearerStrategy(
+        'post',
+        'https://cloud.segware.com.br/server/v2/auth',
+        process.env.SIGMA_CLOUD_USERNAME as string, 
+        process.env.SIGMA_CLOUD_PASSWORD as string,
+        undefined,
+        undefined,
+        { type: 'WEB' },
+        (response: Axios.AxiosXHR<string>): string => response.data
+      )
+    );
+
+    const receiverMap = (await httpClientInstance.get<IReceiverMap.IReceiverMap>(`https://api.segware.com.br/v1/accounts/${ accountId }/receivers/${ receiverId }`)).data;
+
+    if (!receiverMap) {
+      return {
+        status: 404,
+        data: {
+          timestamp,
+          status: false,
+          statusCode: 404,
+          method: req.method,
+          path: req.originalUrl || req.url,
+          query: req.query,
+          headers: req.headers,
+          body: req.body,
+          message: 'Receiver not found.',
+          suggestion: 'Please check the partitionId and try again.'
+        }
+      };
+    }
     
     httpClientInstance.clearAuthenticationStrategy();
     
@@ -97,11 +131,10 @@ export const createOpening = async (
             account: accountMap.accountCode,
             code,
             companyId: accountMap.companyId,
-            complement: `Nome da Partição: ${ partitionMap.description }, Complemento: ${ complement }`,
+            complement,
             eventId: EVENT_ID,
-            partition: partitionMap.number,
             protocolType: PROTOCOL_TYPE,
-            receiverDescription
+            receiverDescription: receiverMap.name
           }
         ] 
       }
