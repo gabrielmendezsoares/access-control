@@ -28,7 +28,7 @@ Its main strength lies in flexibility: the system supports multiple validation c
 
 ### ⚙️ Setup
 
-```bash
+```bash 
 # Clone & navigate
 git clone <repository-url> && cd access-control
 
