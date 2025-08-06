@@ -1,9 +1,10 @@
-export interface IcreateOpeningReqBody {
-  accountId: number;
-  code: string;
-  complement: string;
-  partitionId: number;
-  receiverDescription: string;
-  receiverId: number;
-  server: string;
+export interface ICreateAccessThroughWhatsAppReqBody {
+  Body: {
+    Info: {
+      PushName: string;
+      SenderJid: string;
+    };
+    Text: string;
+  };
+  Type: string;
 }

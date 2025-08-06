@@ -8,7 +8,7 @@ x-common-variables: &common-variables
 services:
   main-development:
     <<: *common-variables
-    container_name: main-development-gate-opening
+    container_name: main-development-access-control
     build:
       context: .
       dockerfile: Dockerfile
@@ -24,7 +24,7 @@ services:
       
   main-production:
     <<: *common-variables
-    container_name: main-production-gate-opening
+    container_name: main-production-access-control
     build:
       context: .
       dockerfile: Dockerfile
@@ -37,7 +37,7 @@ services:
 
   db:
     <<: *common-variables
-    container_name: db-mysql-gate-opening
+    container_name: db-mysql-access-control
     image: mysql:8.0
     ports:
       - "4406:3306"
