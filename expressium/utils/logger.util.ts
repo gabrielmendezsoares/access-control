@@ -1,9 +1,13 @@
 import fs from 'fs/promises';
+import { createRequire } from 'module';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import winston from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
 import { findProjectRootDirectory } from './project.util.js';
+
+const require = createRequire(import.meta.url);
+
+const winston = require('winston');
+const DailyRotateFile = require('winston-daily-rotate-file');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,7 +45,7 @@ const createRotateTransport = (
   level: string, 
   maxSize: string = '10m',
   maxFiles: string = '7d' 
-): DailyRotateFile => {
+): any => {
   return new DailyRotateFile(
     {
       filename: path.join(LOGS_DIRECTORY, filename),
@@ -66,7 +70,7 @@ const consoleFormat = winston.format.combine(
   winston.format.colorize(),
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.printf(
-    ({ timestamp, level, message, ...meta }: winston.Logform.TransformableInfo): string => {
+    ({ timestamp, level, message, ...meta }: any): string => {
       let log = `${ timestamp } [${ level }]: ${ message }`;
       
       if (Object.keys(meta).length > 0) {
@@ -153,7 +157,7 @@ export const logger = winston.createLogger(
  *
  * @returns The Winston logger instance for chaining or inspection.
  */
-export const error = (message: string, meta: any = {}): winston.Logger => logger.error(message, meta);
+export const error = (message: string, meta: any = {}): any => logger.error(message, meta);
 
 /**
  * ## warn
@@ -169,7 +173,7 @@ export const error = (message: string, meta: any = {}): winston.Logger => logger
  *
  * @returns The Winston logger instance for chaining.
  */
-export const warn = (message: string, meta: any = {}): winston.Logger => logger.warn(message, meta);
+export const warn = (message: string, meta: any = {}): any => logger.warn(message, meta);
 
 /**
  * ## info
@@ -185,7 +189,7 @@ export const warn = (message: string, meta: any = {}): winston.Logger => logger.
  *
  * @returns The Winston logger instance.
  */
-export const info = (message: string, meta: any = {}): winston.Logger => logger.info(message, meta);
+export const info = (message: string, meta: any = {}): any => logger.info(message, meta);
 
 /**
  * ## debug
@@ -201,4 +205,4 @@ export const info = (message: string, meta: any = {}): winston.Logger => logger.
  *
  * @returns The Winston logger instance.
  */
-export const debug = (message: string, meta: any = {}): winston.Logger => logger.debug(message, meta);
+export const debug = (message: string, meta: any = {}): any => logger.debug(message, meta);
