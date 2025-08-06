@@ -1,0 +1,513 @@
+openapi: 3.0.3
+info:
+  title: 🔐 Access Control
+  version: 2.0.0
+  description: |
+    ## 📋 Overview
+
+    Access Control is a modular physical access management system designed to authenticate and authorize individuals in monitored environments such as residential condominiums, corporate facilities, industrial sites, and institutions.
+
+    Its main strength lies in flexibility: the system supports multiple validation channels, including biometrics, QR codes, authorization lists, corporate API integrations, and messaging applications. This modular architecture allows each component to operate independently or together, easily adapting to various scenarios and operational needs.
+
+    ### 🎯 Objectives
+
+    - Automate the authentication and entry approval process
+    - Integrate with physical devices (gates, turnstiles, barriers, etc.)
+    - Operate seamlessly alongside existing systems
+    - Ensure complete traceability through event logs in Sigma Cloud
+
+    ### 🧩 Available Modules
+
+    - **WhatsApp** — _Access granted via encrypted messages initiated by QR Code scanning_
+servers:
+  - url: http://localhost:3230
+    description: Development server
+security:
+  - Bearer: []
+components:
+  securitySchemes:
+    Basic:
+      type: http
+      scheme: basic
+      description: Basic authentication using username and password
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer authentication using JWT token
+  schemas:
+    ICreateAccessThroughWhatsAppReqBody:
+      type: object
+      required:
+        - Type
+        - Body
+      properties:
+        Type:
+          type: string
+          enum: ["receveid_message"]
+          description: Message type - must be 'receveid_message'
+          example: "receveid_message"
+        Body:
+          type: object
+          required:
+            - Text
+            - Info
+          properties:
+            Text:
+              type: string
+              pattern: '^AC:(wd|ww)-[a-zA-Z0-9]+$'
+              description: |
+                Access control message in format: AC:ACCESS_TYPE-ENCRYPTED_PAYLOAD
+
+                Initiated by scanning QR codes at physical access points.
+                - ACCESS_TYPE: 'wd' for dweller, 'ww' for whitelist
+                - ENCRYPTED_PAYLOAD: AES-256-CBC encrypted JSON with access parameters from QR code
+              example: "AC:ww-encryptedPayloadString123"
+            Info:
+              type: object
+              required:
+                - SenderJid
+                - PushName
+              properties:
+                SenderJid:
+                  type: string
+                  pattern: '^[0-9]+@c\.us$'
+                  description: WhatsApp sender JID (phone number + @c.us)
+                  example: "5561987654321@c.us"
+                PushName:
+                  type: string
+                  description: Sender's display name in WhatsApp
+                  example: "João da Silva"
+    IResponseData:
+      type: object
+      required:
+        - message
+        - suggestion
+      properties:
+        message:
+          type: string
+          description: Human-readable error message
+        suggestion:
+          type: string
+          description: Suggested action to resolve the error
+    IGetAuthenticationResponseData:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          required:
+            - username
+            - roleList
+            - token
+            - expiresIn
+          properties:
+            username:
+              type: string
+              description: Username of the authenticated user.
+              example: "john.doe"
+            roleList:
+              type: array
+              items:
+                type: string
+              description: Roles or permissions assigned to the user.
+              example: ["admin", "user"]
+            token:
+              type: string
+              description: Signed JWT token for subsequent authenticated requests.
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            expiresIn:
+              type: integer
+              format: int64
+              description: Token expiration time in milliseconds.
+              example: 1726080123123
+    ICreateAccessThroughWhatsAppResponseData:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: string
+          enum: ["OK"]
+          description: Indicator of a successful request.
+          example: "OK"
+    IGetHealthResponseData:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: object
+          required:
+            - cpuUsage
+            - memoryUsage
+          properties:
+            cpuUsage:
+              type: object
+              required:
+                - name
+                - value
+              properties:
+                name:
+                  type: string
+                  description: Label for CPU usage metric.
+                  example: "Uso de CPU"
+                value:
+                  type: string
+                  description: Value of CPU usage.
+                  example: "8.1%"
+            memoryUsage:
+              type: object
+              required:
+                - name
+                - value
+              properties:
+                name:
+                  type: string
+                  description: Label for memory usage metric.
+                  example: "Uso de memória"
+                value:
+                  type: string
+                  description: Value of memory usage.
+                  example: "8.1MB"
+tags:
+  - name: Application
+    description: Core system operations including authentication, health monitoring, and system management
+  - name: Access Control — WhatsApp
+    description: Physical access control through WhatsApp messaging triggered by QR code scanning at entry points
+paths:
+  /api/v1/get/authentication:
+    get:
+      tags:
+        - Application
+      summary: Authenticate user and issue JWT token
+      description: |
+        Authenticates a user via Basic Authentication and issues a signed JWT token upon successful validation.
+        A request was made on it to verify credentials and generate an access token for authorized usage.
+      security:
+        - Basic: []
+      responses:
+        '200':
+          description: The request was successfully received, understood, and processed. A valid response was generated based on the request made on it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IGetAuthenticationResponseData'
+              example:
+                data:
+                  username: "john.doe"
+                  roleList: ["admin", "user"]
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  expiresIn: 1726080123123
+        '400':
+          description: The server could not process the request due to invalid syntax, malformed data, or missing parameters. Although there was a request on it, the client must correct the request before retrying.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Authorization header required for secure access
+                  value:
+                    message: "Authorization header required for secure access."
+                    suggestion: "Include an Authorization header using the Basic scheme: \"Basic base64(username:password)\"."
+                example_2:
+                  summary: Authorization must use Basic authentication scheme
+                  value:
+                    message: "Authorization must use Basic authentication scheme."
+                    suggestion: "Use the Basic authentication scheme: \"Basic base64(username:password)\"."
+        '401':
+          description: The request was received and a request was made on it, but the client failed to provide valid authentication credentials. Access is denied until proper authentication is provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Invalid username
+                  value:
+                    message: "Invalid username."
+                    suggestion: "Ensure the username is correct or register for an account if you don’t have one."
+                example_2:
+                  summary: Incorrect password
+                  value:
+                    message: "Incorrect password."
+                    suggestion: "Double-check your password or reset it if you’ve forgotten it."
+        '403':
+          description: Account is inactive.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              example:
+                message: "Account is inactive."
+                suggestion: "Contact your administrator to request account reactivation."
+        '500':
+          description: Authentication process encountered a technical issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              example:
+                message: "Authentication process encountered a technical issue."
+                suggestion: "Please try again later or contact support if the issue persists."
+  /api/v1/create/access-through-whatsapp:
+    post:
+      tags:
+        - Access Control — WhatsApp
+      summary: Process WhatsApp access control requests
+      description: |
+        Processes WhatsApp messages related to access control validation triggered by QR code scans at physical access points.
+        A request was made on it to validate the message content and respond accordingly.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ICreateAccessThroughWhatsAppReqBody'
+            examples:
+              dweller_access_request:
+                summary: Dweller access request
+                value:
+                  Body:
+                    Text: "AC:wd-encryptedDwellerPayload123"
+                    Info:
+                      SenderJid: "5561987654321@s.whatsapp.net"
+                      PushName: "João Silva"
+                  Type: "receveid_message"
+              whitelist_access_request:
+                summary: Whitelist access request
+                value:
+                  Body:
+                    Text: "AC:ww-encryptedWhitelistPayload456"
+                    Info:
+                      SenderJid: "5561987654321@s.whatsapp.net"
+                      PushName: "Maria Santos"
+                  Type: "receveid_message"
+      responses:
+        '200':
+          description: The request was successfully received, understood, and processed. A valid response was generated based on the request made on it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ICreateAccessThroughWhatsAppResponseData'
+              example:
+                data: "OK"
+        '400':
+          description: The server could not process the request due to invalid syntax, malformed data, or missing parameters. Although there was a request on it, the client must correct the request before retrying.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Missing Authorization header
+                  value:
+                    message: "Missing Authorization header."
+                    suggestion: "Include an Authorization header using the Bearer scheme: \"Bearer <token>\""
+                example_2:
+                  summary: Invalid Authorization scheme
+                  value:
+                    message: "Invalid Authorization scheme."
+                    suggestion: "Use the Bearer authentication scheme: \"Bearer <token>\""
+                example_3:
+                  summary: Service Unavailable
+                  value:
+                    message: "Service Unavailable."
+                    suggestion: "Please try again in a few moments or contact: 0800-062-1800"
+        '401':
+          description: The request was received and a request was made on it, but the client failed to provide valid authentication credentials. Access is denied until proper authentication is provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Authentication token has expired
+                  value:
+                    message: "Authentication token has expired."
+                    suggestion: "Please sign in again to obtain a new token."
+                example_2:
+                  summary: Invalid authentication token
+                  value:
+                    message: "Invalid authentication token."
+                    suggestion: "Ensure your token is valid and has not been tampered with."
+                example_3:
+                  summary: Authentication token is not yet active
+                  value:
+                    message: "Authentication token is not yet active."
+                    suggestion: "Wait until the token’s start time before using it."
+                example_4:
+                  summary: Authentication token has expired
+                  value:
+                    message: "Authentication token has expired."
+                    suggestion: "Please sign in again to obtain a new token."
+                example_5:
+                  summary: Access denied
+                  value:
+                    message: "Access denied."
+                    suggestion: "This feature requires prior authorization to be accessed. Contact us: 0800-062-1800"
+        '403':
+          description: The server understood the request and a request was made on it, but the client does not have the necessary permissions to access the resource. Authentication may have succeeded, but authorization is lacking for this specific action.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Missing required role
+                  value:
+                    message: "Missing required role."
+                    suggestion: "If you believe this is an error, contact your administrator to request appropriate access."    
+                example_2:
+                  summary: Access denied
+                  value:
+                    message: "Access denied."
+                    suggestion: "This feature requires prior authorization to be accessed. Contact us: 0800-062-1800"
+        '415':
+          description: Unsupported message type received.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              example:
+                message: "Unsupported message type received."
+                suggestion: "Expected message type: \"receveid_message\", received: \"other_type\""
+        '422':
+          description: The server understood the request and a request was made on it, but it was unable to process the contained instructions due to semantic errors or invalid data. This typically occurs when the input is well-formed but fails business validation rules.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Invalid message format received
+                  value:
+                    message: "Invalid message format received."
+                    suggestion: "Expected message format: \"AC:ACCESS_TYPE(-ARGUMENT_A?)\""
+                example_2:
+                  summary: Service Unavailable
+                  value:
+                    message: "Service Unavailable."
+                    suggestion: "Please try again in a few moments or contact: 0800-062-1800"
+        '500':
+          description: The server encountered an unexpected error while processing the request. A request was made on it, but the server failed to complete the operation due to an internal issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: The authorization process is temporarily unavailable
+                  value:
+                    message: "The authorization process is temporarily unavailable."
+                    suggestion: "Please try again later or contact support if the issue persists."
+                example_2:
+                  summary: The authorization process encountered a technical issue
+                  value:
+                    message: "The authorization process encountered a technical issue."
+                    suggestion: "Please try again later or contact support if the issue persists."
+                example_3:
+                  summary: The access creation process through WhatsApp encountered a technical issue
+                  value:
+                    message: "The access creation process through WhatsApp encountered a technical issue."
+                    suggestion: "Please try again later or contact support if the issue persists."
+  /api/v1/get/health:
+    get:
+      tags:
+        - Application
+      summary: Retrieve application health metrics
+      description: |
+        Returns current system health indicators such as CPU and memory usage.
+        A request was made on it to monitor the application’s operational status in real time.
+      responses:
+        '200':
+          description: The request was successfully received, understood, and processed. A valid response was generated based on the request made on it.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IGetHealthResponseData'
+              example:
+                data:
+                  cpuUsage:
+                    name: "Uso de CPU"
+                    value: "8.1%"
+                  memoryUsage:
+                    name: "Uso de memória"
+                    value: "8.1MB"
+        '400':
+          description: The server could not process the request due to invalid syntax, malformed data, or missing parameters. Although there was a request on it, the client must correct the request before retrying.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Missing Authorization header
+                  value:
+                    message: "Missing Authorization header."
+                    suggestion: "Include an Authorization header using the Bearer scheme: \"Bearer <token>\"."
+                example_2:
+                  summary: Invalid Authorization scheme
+                  value:
+                    message: "Invalid Authorization scheme."
+                    suggestion: "Use the Bearer authentication scheme: \"Bearer <token>\"."
+        '401':
+          description: The request was received and a request was made on it, but the client failed to provide valid authentication credentials. Access is denied until proper authentication is provided.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: Authentication token has expired
+                  value:
+                    message: "Authentication token has expired."
+                    suggestion: "Please sign in again to obtain a new token."
+                example_2:
+                  summary: Invalid authentication token
+                  value:
+                    message: "Invalid authentication token."
+                    suggestion: "Ensure your token is valid and has not been tampered with."
+                example_3:
+                  summary: Authentication token is not yet active
+                  value:
+                    message: "Authentication token is not yet active."
+                    suggestion: "Wait until the token’s start time before using it."
+                example_4:
+                  summary: Authentication token has expired
+                  value:
+                    message: "Authentication token has expired."
+                    suggestion: "Please sign in again to obtain a new token."
+        '403':
+          description: Missing required role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              example:
+                message: "Missing required role."
+                suggestion: "If you believe this is an error, contact your administrator to request appropriate access."    
+        '500':
+          description: The server encountered an unexpected error while processing the request. A request was made on it, but the server failed to complete the operation due to an internal issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IResponseData'
+              examples:
+                example_1:
+                  summary: The authorization process is temporarily unavailable
+                  value:
+                    message: "The authorization process is temporarily unavailable."
+                    suggestion: "Please try again later or contact support if the issue persists."
+                example_2:
+                  summary: The authorization process encountered a technical issue
+                  value:
+                    message: "The authorization process encountered a technical issue."
+                    suggestion: "Please try again later or contact support if the issue persists."
+                example_3:
+                  summary: The health diagnostic process encountered a technical issue
+                  value:
+                    message: "The health diagnostic process encountered a technical issue."
+                    suggestion: "Please try again later or contact support if the issue persists."

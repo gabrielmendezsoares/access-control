@@ -1,25 +1,13 @@
 export interface IResponseData {
-  timestamp: string;
-  status: boolean;
-  statusCode: number;
-  method: string;
-  path: string;
-  query: Record<string, any>;
-  headers: Record<string, any>;
-  body: any;
   message: string;
   suggestion: string;
 }
 
+export interface ICreateAccessThroughWhatsAppResponseData {
+  data: string;
+}
+
 export interface IGetHealthResponseData {
-  timestamp: string;
-  status: boolean;
-  statusCode: number;
-  method: string;
-  path: string;
-  query: Record<string, any>;
-  headers: Record<string, any>;
-  body: any;
   monitor: {
     cpuUsage: {
       name: string;
@@ -30,16 +18,4 @@ export interface IGetHealthResponseData {
       value: string;
     };
   };
-}
-
-export interface ICreateOpeningResponseData {
-  timestamp: string;
-  status: boolean;
-  statusCode: number;
-  method: string;
-  path: string;
-  query: Record<string, any>;
-  headers: Record<string, any>;
-  body: any;
-  data: unknown;
 }

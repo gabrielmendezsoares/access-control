@@ -1,2 +1,2 @@
-export * as appService from './app.service.js';
-export * as createOpeningService from './createOpening.service.js';
+export * as createAccessThroughWhatsappService from './createAccessThroughWhatsapp.service.js';
+export * as getHealthService from './getHealth.service.js';
