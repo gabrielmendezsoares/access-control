@@ -12,9 +12,11 @@ import path from 'path';
  *
  * @param startDirectory - The directory path to start searching from.
  * 
- * @return A promise that resolves to the absolute path of the project root directory.
+ * @return
+ * A promise that resolves to the absolute path of the project root directory.
  *
- * @throws Will throw an error if a `package.json` file is not found in any parent directory.
+ * @throws
+ * Will throw an error if a `package.json` file is not found in any parent directory.
  */
 export const findProjectRootDirectory = async (startDirectory: string): Promise<string> => {
   let currentDirectory = startDirectory;

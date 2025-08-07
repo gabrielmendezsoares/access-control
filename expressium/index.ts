@@ -44,7 +44,8 @@ declare global {
      * @param element - The value to test.
      * @param includeArrays - Whether to treat arrays as objects (default: `false`).
      * 
-     * @returns `true` if the value is an object (excluding `null`, and optionally arrays).
+     * @returns
+     * `true` if the value is an object (excluding `null`, and optionally arrays).
      */
     isObject(element: unknown, includeArrays?: boolean): element is object;
 
@@ -59,7 +60,8 @@ declare global {
      *
      * @param element - The value to test.
      * 
-     * @returns `true` if the value is a string.
+     * @returns
+     * `true` if the value is a string.
      */
     isString(element: unknown): element is string;
   }
@@ -137,7 +139,8 @@ const setupGracefulShutdown = (runningServerInstance: Server<typeof IncomingMess
  * Logs the current timestamp and server port every 60 seconds to aid in monitoring.
  * Uses `.unref()` to avoid blocking the process from exiting naturally.
  *
- * @returns A `NodeJS.Timeout` object representing the interval timer.
+ * @returns
+ * A `NodeJS.Timeout` object representing the interval timer.
  */
 const setupPeriodicLogging = (): NodeJS.Timeout => {
   return setInterval(
@@ -163,9 +166,11 @@ const setupPeriodicLogging = (): NodeJS.Timeout => {
  * 
  * @param serverInstance - The Express app or HTTP/HTTPS server instance to start.
  *
- * @returns A Promise resolving to the running HTTP/HTTPS server.
+ * @returns
+ * A Promise resolving to the running HTTP/HTTPS server.
  *
- * @throws If server fails to start or encounters fatal errors.
+ * @throws
+ * If server fails to start or encounters fatal errors.
  */
 const startServer = async (serverInstance: Express | https.Server): Promise<Server<typeof IncomingMessage, typeof ServerResponse>> => {
   const RunningServerInstance = serverInstance.listen(
@@ -187,18 +192,20 @@ const startServer = async (serverInstance: Express | https.Server): Promise<Serv
  * Loads SSL certificate and private key for HTTPS configuration.
  *
  * @description
- * Reads `cert.pem` and `key.pem` files from the SSL directory using `Promise.all`
- * for concurrent access. Certificates must be PEM-encoded.
+ * Reads `server.crt` and `server.key` files from the SSL directory using `Promise.all`
+ * for concurrent access.
  * 
- * @returns A Promise resolving to an object with `cert` and `key` strings.
+ * @returns
+ * A Promise resolving to an object with `cert` and `key` strings.
  *
- * @throws If file reading fails due to missing or inaccessible certificate files.
+ * @throws
+ * If file reading fails due to missing or inaccessible certificate files.
  */
 const loadSSLCertificates = async (): Promise<{ cert: string, key: string }> => {
   const [cert, key] = await Promise.all(
     [
-      fs.readFile(path.join(SSL_DIRECTORY, 'cert.pem'), 'utf8'),
-      fs.readFile(path.join(SSL_DIRECTORY, 'key.pem'), 'utf8')
+      fs.readFile(path.join(SSL_DIRECTORY, 'server.crt'), 'utf8'),
+      fs.readFile(path.join(SSL_DIRECTORY, 'server.key'), 'utf8')
     ]
   );
     
@@ -217,9 +224,11 @@ const loadSSLCertificates = async (): Promise<{ cert: string, key: string }> => 
  * @param app - The Express application instance.
  * @param useHttps - Whether to create an HTTPS server (default: false).
  *
- * @returns A Promise resolving to the HTTP or HTTPS server instance.
+ * @returns
+ * A Promise resolving to the HTTP or HTTPS server instance.
  *
- * @throws If SSL certificate loading fails.
+ * @throws
+ * If SSL certificate loading fails.
  */
 const createServer = async (
   app: Express, 

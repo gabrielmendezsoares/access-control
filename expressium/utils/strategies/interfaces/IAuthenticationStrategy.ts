@@ -39,7 +39,8 @@ export interface IAuthenticationStrategy {
    *
    * @param configurationMap - The Axios request configuration to enhance with authentication.
    *
-   * @returns A modified Axios configuration with authentication details, either synchronously or via Promise.
+   * @returns
+   * A modified Axios configuration with authentication details, either synchronously or via Promise.
    */
   authenticate(configurationMap: Axios.AxiosXHRConfig<any>): Promise<Axios.AxiosXHRConfig<any>> | Axios.AxiosXHRConfig<any>;
 }

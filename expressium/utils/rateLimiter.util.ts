@@ -18,7 +18,8 @@ import { rateLimit, RateLimitRequestHandler } from 'express-rate-limit';
  *
  * If a client exceeds the allowed number of requests, a `429 Too Many Requests` response is returned.
  *
- * @returns Express middleware that enforces rate limiting rules.
+ * @returns
+ * Express middleware that enforces rate limiting rules.
  */
 export const rateLimiter = (): RateLimitRequestHandler => {
   return rateLimit(

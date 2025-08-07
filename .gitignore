@@ -7,7 +7,13 @@ logs/.rejection-audit.json*
 logs/.warn-audit.json*
 logs/*.log*
 node_modules
+ssl/*.ext*
+ssl/*.cnf*
+ssl/*.crt*
+ssl/*.csr*
+ssl/*.key*
 ssl/*.pem*
+ssl/*.srl*
 .env
 docker-compose.yml
 storage.sql

@@ -74,7 +74,8 @@ export class BasicAndBearerStrategy implements IAuthenticationStrategy.IAuthenti
    * @param expirationExtractor - Custom function to extract expiration time in milliseconds (default: `expiresIn * 1000`).
    * @param expirationBuffer - Safety margin in ms before token expiry (default: 60,000 ms).
    * 
-   * @throws Error if required parameters are missing or invalid.
+   * @throws
+   * Error if required parameters are missing or invalid.
    */
   public constructor(
     private readonly method: string,
@@ -101,9 +102,11 @@ export class BasicAndBearerStrategy implements IAuthenticationStrategy.IAuthenti
    * 
    * The result is cached until expiration.
    * 
-   * @returns A Promise resolving to the retrieved bearer token.
+   * @returns
+   * A Promise resolving to the retrieved bearer token.
    * 
-   * @throws Error if the authentication request fails or the token cannot be extracted.
+   * @throws
+   * Error if the authentication request fails or the token cannot be extracted.
    */
   private async obtainToken(): Promise<string> {
     try {
@@ -145,7 +148,8 @@ export class BasicAndBearerStrategy implements IAuthenticationStrategy.IAuthenti
    * Returns `true` if a token exists and has not yet expired, factoring in
    * the configured expiration buffer. Otherwise, returns `false`.
    * 
-   * @returns Boolean indicating whether the token can be reused.
+   * @returns
+   * Boolean indicating whether the token can be reused.
    */
   private isTokenValid(): boolean {
     return !!this.token && Date.now() < this.expiresAt;
@@ -182,9 +186,11 @@ export class BasicAndBearerStrategy implements IAuthenticationStrategy.IAuthenti
    * 
    * @param configurationMap - Axios request configuration to modify.
    * 
-   * @returns A Promise resolving to the updated config including the bearer token.
+   * @returns
+   * A Promise resolving to the updated config including the bearer token.
    * 
-   * @throws Error if the token cannot be acquired.
+   * @throws
+   * Error if the token cannot be acquired.
    */
   public async authenticate(configurationMap: Axios.AxiosXHRConfig<any>): Promise<Axios.AxiosXHRConfig<any>> {
     if (!this.isTokenValid()) {

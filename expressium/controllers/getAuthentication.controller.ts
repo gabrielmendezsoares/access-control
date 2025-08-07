@@ -17,7 +17,8 @@ import { loggerUtil } from '../utils/index.js';
  * @param req - Express request object.
  * @param res - Express response object.
  *
- * @returns Sends a JSON response with status code and authentication result.
+ * @returns
+ * Sends a JSON response with status code and authentication result.
  */
 export const getAuthentication = async (
   req: Request, 

@@ -15,7 +15,7 @@ Its main strength lies in flexibility: the system supports multiple validation c
 
 ### 🧩 Available Modules
 
-- <a href="./README.whatsapp.md">**WhatsApp**</a> — _Access granted via encrypted messages initiated by QR Code scanning_
+- [**WhatsApp**](./README.whatsapp.md) — _Access granted via encrypted messages initiated by QR Code scanning_
 
 ---
 

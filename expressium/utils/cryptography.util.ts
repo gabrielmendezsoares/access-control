@@ -22,9 +22,11 @@ import crypto from 'crypto';
  * @param ivString - A 128-bit (16-byte) IV as a 32-character hex string.
  * @param data - Plaintext string to encrypt.
  *
- * @returns Encrypted data as a hex string.
+ * @returns
+ * Encrypted data as a hex string.
  *
- * @throws If the key, IV, or data is invalid, or encryption fails.
+ * @throws
+ * If the key, IV, or data is invalid, or encryption fails.
  */
 export const encryptToAes256Cbc = (
   encryptionKey: string,
@@ -62,9 +64,11 @@ export const encryptToAes256Cbc = (
  * @param ivString - A 128-bit (16-byte) IV as a 32-character hex string.
  * @param encryptedData - Encrypted data as a hex string.
  *
- * @returns Decrypted plaintext string.
+ * @returns
+ * Decrypted plaintext string.
  *
- * @throws If the key, IV, or ciphertext is invalid, or decryption fails.
+ * @throws
+ * If the key, IV, or ciphertext is invalid, or decryption fails.
  */
 export const decryptFromAes256Cbc = (
   encryptionKey: string, 

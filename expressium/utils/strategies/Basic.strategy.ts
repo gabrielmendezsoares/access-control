@@ -30,7 +30,8 @@ export class BasicStrategy implements IAuthenticationStrategy.IAuthenticationStr
    * @param username - The username for basic authentication.
    * @param password - The password associated with the given username.
    * 
-   * @throws Error if either username or password is invalid or missing.
+   * @throws
+   * Error if either username or password is invalid or missing.
    */
   public constructor(
     private readonly username: string,
@@ -48,7 +49,8 @@ export class BasicStrategy implements IAuthenticationStrategy.IAuthenticationStr
    * 
    * @param configurationMap - Axios request configuration to modify.
    * 
-   * @returns Updated Axios config including basic auth credentials.
+   * @returns
+   * Updated Axios config including basic auth credentials.
    */
   public authenticate(configurationMap: Axios.AxiosXHRConfig<any>): Axios.AxiosXHRConfig<any> {
     return {
