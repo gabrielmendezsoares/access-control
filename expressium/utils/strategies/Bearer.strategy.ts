@@ -29,7 +29,8 @@ export class BearerStrategy implements IAuthenticationStrategy.IAuthenticationSt
    * 
    * @param token - The bearer token to use for authentication. It must be a valid non-empty string.
    * 
-   * @throws Error if the token is invalid or empty.
+   * @throws
+   * Error if the token is invalid or empty.
    */
   public constructor(
     private readonly token: string
@@ -46,7 +47,8 @@ export class BearerStrategy implements IAuthenticationStrategy.IAuthenticationSt
    * 
    * @param configurationMap - Axios request configuration to modify.
    * 
-   * @returns Modified Axios request configuration including the bearer token.
+   * @returns
+   * Modified Axios request configuration including the bearer token.
    */
   public authenticate(configurationMap: Axios.AxiosXHRConfig<any>): Axios.AxiosXHRConfig<any> {
     return {

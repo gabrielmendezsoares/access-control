@@ -30,7 +30,8 @@ export class ApiKeyStrategy implements IAuthenticationStrategy.IAuthenticationSt
    * @param key - The API key to include in request headers.
    * @param headerName - Optional name of the header to store the key. Defaults to `X-API-Key`.
    * 
-   * @throws Error if the key is empty or invalid.
+   * @throws
+   * Error if the key is empty or invalid.
    */
   public constructor(
     private readonly key: string,
@@ -48,7 +49,8 @@ export class ApiKeyStrategy implements IAuthenticationStrategy.IAuthenticationSt
    * 
    * @param configurationMap - Axios request configuration to modify.
    * 
-   * @returns Updated Axios request config including the API key.
+   * @returns
+   * Updated Axios request config including the API key.
    */
   public authenticate(configurationMap: Axios.AxiosXHRConfig<any>): Axios.AxiosXHRConfig<any> {
     return {

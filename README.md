@@ -15,9 +15,9 @@ Its main strength lies in flexibility: the system supports multiple validation c
 
 ### 🧩 Available Modules
 
-- <a href="./README.whatsapp.md">**WhatsApp**</a> — _Access granted via encrypted messages initiated by QR Code scanning_
+- [**WhatsApp**](./README.whatsapp.md) — _Access granted via encrypted messages initiated by QR Code scanning_
 
----
+--- 
 
 ## 📦 Quick Start
 
@@ -26,9 +26,9 @@ Its main strength lies in flexibility: the system supports multiple validation c
 - **Node.js** ≥ `20.14.0` — _JavaScript runtime environment_
 - **MySQL** ≥ `8.0` — _Relational database_
 
-### ⚙️ Setup
+### ⚙️ Setup 
 
-```bash
+```bash 
 # Clone & navigate
 git clone <repository-url> && cd access-control
 
@@ -106,3 +106,4 @@ npm run build && npm run start:production
 | `npm test` | _Run all tests once_ |
 | `npm run test:watch` | _Run tests in watch mode_ |
 | `npm run test:coverage` | _Run tests and generate a coverage report_ |
+ 

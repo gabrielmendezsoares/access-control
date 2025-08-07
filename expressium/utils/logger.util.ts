@@ -38,7 +38,8 @@ const fileFormat = winston.format.combine(
  * @param maxSize - Maximum size before rotating a log file (default: `'10m'`).
  * @param maxFiles - Maximum retention period for old logs (default: `'7d'`).
  *
- * @returns A configured Winston DailyRotateFile transport.
+ * @returns
+ * A configured Winston DailyRotateFile transport.
  */
 const createRotateTransport = (
   filename: string, 
@@ -155,7 +156,8 @@ export const logger = winston.createLogger(
  * @param message - The error message to log.
  * @param meta - Optional object containing additional context or stack trace data.
  *
- * @returns The Winston logger instance for chaining or inspection.
+ * @returns
+ * The Winston logger instance for chaining or inspection.
  */
 export const error = (message: string, meta: any = {}): any => logger.error(message, meta);
 
@@ -171,7 +173,8 @@ export const error = (message: string, meta: any = {}): any => logger.error(mess
  * @param message - Warning message describing the potential issue.
  * @param meta - Optional metadata or diagnostic info.
  *
- * @returns The Winston logger instance for chaining.
+ * @returns
+ * The Winston logger instance for chaining.
  */
 export const warn = (message: string, meta: any = {}): any => logger.warn(message, meta);
 
@@ -187,7 +190,8 @@ export const warn = (message: string, meta: any = {}): any => logger.warn(messag
  * @param message - The informational message to log.
  * @param meta - Optional data providing context.
  *
- * @returns The Winston logger instance.
+ * @returns
+ * The Winston logger instance.
  */
 export const info = (message: string, meta: any = {}): any => logger.info(message, meta);
 
@@ -203,6 +207,7 @@ export const info = (message: string, meta: any = {}): any => logger.info(messag
  * @param message - The debug message to log.
  * @param meta - Optional object containing trace data or internal state snapshots.
  *
- * @returns The Winston logger instance.
+ * @returns
+ * The Winston logger instance.
  */
 export const debug = (message: string, meta: any = {}): any => logger.debug(message, meta);

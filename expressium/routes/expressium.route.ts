@@ -73,7 +73,7 @@ export const generateRoute = (
   (router as any)[method](url, ...middlewareRequestHandlerList, mainRequestHandler);
 };
 
-const swaggerDocument = YAML.load(`${ PROJECT_ROOT_DIRECTORY }/swagger.yaml`);
+const swaggerDocument = YAML.load(`${ PROJECT_ROOT_DIRECTORY }/swagger.yml`);
 
 generateRoute(
   'use',

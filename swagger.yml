@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: 🔐 Access Control
-  version: 2.0.0
+  version: 2.0.1
   description: |
     ## 📋 Overview
 
@@ -60,6 +60,7 @@ components:
                 Access control message in format: AC:ACCESS_TYPE-ENCRYPTED_PAYLOAD
 
                 Initiated by scanning QR codes at physical access points.
+                
                 - ACCESS_TYPE: 'wd' for dweller, 'ww' for whitelist
                 - ENCRYPTED_PAYLOAD: AES-256-CBC encrypted JSON with access parameters from QR code
               example: "AC:ww-encryptedPayloadString123"

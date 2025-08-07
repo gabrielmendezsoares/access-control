@@ -14,7 +14,8 @@ export const buildRoutes = (): void => {
       'get',
       '/v1/get/health',
       [],
-      getHealthController.getHealth
+      getHealthController.getHealth,
+      true
     );
   } catch (error: unknown) {
     loggerUtil.error(error instanceof Error ? error.message : String(error));

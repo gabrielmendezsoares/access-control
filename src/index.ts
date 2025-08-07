@@ -13,7 +13,7 @@ const buildServer = async (): Promise<void> => {
     const app = express();
 
     app.use(cors());
-    app.use(helmet());
+    app.use(helmet({ contentSecurityPolicy: { directives: { upgradeInsecureRequests: null } } }));
     app.use(express.json());
     appRoute.buildRoutes();
     app.use('/api', expressiumRoute.router);

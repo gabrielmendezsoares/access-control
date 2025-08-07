@@ -85,7 +85,8 @@ export class HttpClient {
    *
    * @param configurationMap - Optional Axios config overrides.
    * 
-   * @returns Configured Axios instance.
+   * @returns
+   * Configured Axios instance.
    */
   private createAxiosInstance(configurationMap?: { headers: Record<string, string> }): Axios.AxiosInstance {
     return axios.create<any>(
@@ -162,9 +163,11 @@ export class HttpClient {
    * @param data - Optional request body payload.
    * @param configurationMap - Additional Axios request config.
    *
-   * @returns A promise resolving to the typed Axios response.
+   * @returns
+   * A promise resolving to the typed Axios response.
    *
-   * @throws If the request fails.
+   * @throws
+   * If the request fails.
    */
   public async request<T>(
     method: string,
@@ -190,9 +193,11 @@ export class HttpClient {
    * @param url - The endpoint to request.
    * @param configurationMap - Optional request configuration.
    *
-   * @returns A promise resolving to an Axios response with data of type T.
+   * @returns
+   * A promise resolving to an Axios response with data of type T.
    *
-   * @throws If the request fails.
+   * @throws
+   * If the request fails.
    */
   public async get<T>(
     url: string, 
@@ -210,9 +215,11 @@ export class HttpClient {
    * @param data - Payload to send in the request body.
    * @param configurationMap - Optional request configuration.
    *
-   * @returns A promise resolving to an Axios response with data of type T.
+   * @returns
+   * A promise resolving to an Axios response with data of type T.
    *
-   * @throws If the request fails.
+   * @throws
+   * If the request fails.
    */
   public async post<T>(
     url: string, 
@@ -231,9 +238,11 @@ export class HttpClient {
    * @param data - Full replacement payload.
    * @param configurationMap - Optional request configuration.
    *
-   * @returns A promise resolving to an Axios response with data of type T.
+   * @returns
+   * A promise resolving to an Axios response with data of type T.
    *
-   * @throws If the request fails.
+   * @throws
+   * If the request fails.
    */
   public async put<T>(
     url: string, 
@@ -252,9 +261,11 @@ export class HttpClient {
    * @param data - Partial update payload.
    * @param configurationMap - Optional request configuration.
    *
-   * @returns A promise resolving to an Axios response with data of type T.
+   * @returns
+   * A promise resolving to an Axios response with data of type T.
    *
-   * @throws If the request fails.
+   * @throws
+   * If the request fails.
    */
   public async patch<T>(
     url: string, 
@@ -272,9 +283,11 @@ export class HttpClient {
    * @param url - The endpoint to request.
    * @param configurationMap - Optional request configuration.
    *
-   * @returns A promise resolving to an Axios response with data of type T.
+   * @returns
+   * A promise resolving to an Axios response with data of type T.
    *
-   * @throws If the request fails.
+   * @throws
+   * If the request fails.
    */
   public async delete<T>(
     url: string, 
@@ -291,9 +304,11 @@ export class HttpClient {
    * @param url - The endpoint to request.
    * @param configurationMap - Optional request configuration.
    *
-   * @returns A promise resolving to an Axios response with data of type T.
+   * @returns
+   * A promise resolving to an Axios response with data of type T.
    *
-   * @throws If the request fails.
+   * @throws
+   * If the request fails.
    */
   public async head<T>(
     url: string, 
