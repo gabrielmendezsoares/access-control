@@ -26,7 +26,7 @@ Its main strength lies in flexibility: the system supports multiple validation c
 - **Node.js** ≥ `20.14.0` — _JavaScript runtime environment_
 - **MySQL** ≥ `8.0` — _Relational database_
 
-### ⚙️ Setup
+### ⚙️ Setup 
 
 ```bash 
 # Clone & navigate
