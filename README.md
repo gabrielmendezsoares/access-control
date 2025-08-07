@@ -17,7 +17,7 @@ Its main strength lies in flexibility: the system supports multiple validation c
 
 - [**WhatsApp**](./README.whatsapp.md) — _Access granted via encrypted messages initiated by QR Code scanning_
 
----
+--- 
 
 ## 📦 Quick Start
 
