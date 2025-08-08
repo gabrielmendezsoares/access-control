@@ -13,6 +13,14 @@ export const getHealth = async (): Promise<IResponse.IResponse<IResponseData.IGe
         memoryUsage: {
           name: 'Uso de memória',
           value: `${ (await osu.mem.used()).usedMemMb.toFixed(1) }MB`
+        },
+        port: {
+          name: 'Porta',
+          value: process.env.PORT ?? '3000'
+        },
+        logLevel: {
+          name: 'Nível de log',
+          value: process.env.LOG_LEVEL ?? 'info'
         }
       }
     }

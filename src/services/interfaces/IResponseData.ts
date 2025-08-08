@@ -17,5 +17,13 @@ export interface IGetHealthResponseData {
       name: string;
       value: string;
     };
+    port: {
+      name: string;
+      value: string;
+    };
+    logLevel: {
+      name: string;
+      value: string;
+    };
   };
 }
