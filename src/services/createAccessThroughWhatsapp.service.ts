@@ -281,7 +281,7 @@ const validateAccessThroughDweller = async (
 
   const httpClientInstance = new HttpClientUtil.HttpClient();
   const cleanJidCountryCode = jid.split('@')[0].replace(PHONE_REGEX, '').slice(0, 2);
-  const cleanJidWithoutContryCode = jid.split('@')[0].replace(PHONE_REGEX, '').slice(2);
+  const cleanJidWithoutCountryCode = jid.split('@')[0].replace(PHONE_REGEX, '').slice(2);
 
   let page = 0;
 
@@ -298,10 +298,10 @@ const validateAccessThroughDweller = async (
 
             switch (cleanJidCountryCode) {
               case '55':
-                return cleanJidWithoutContryCode === normalizeBrazilianPhone(cleanPhoneWithoutCountryCode);
+                return cleanJidWithoutCountryCode === normalizeBrazilianPhone(cleanPhoneWithoutCountryCode);
 
               default:
-                return cleanJidWithoutContryCode === phoneMap.phone;
+                return cleanJidWithoutCountryCode === phoneMap.phone;
             }
           }
         )

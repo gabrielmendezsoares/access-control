@@ -143,6 +143,8 @@ components:
           required:
             - cpuUsage
             - memoryUsage
+            - port
+            - logLevel
           properties:
             cpuUsage:
               type: object
@@ -172,6 +174,34 @@ components:
                   type: string
                   description: Value of memory usage.
                   example: "8.1MB"
+            port:
+              type: object
+              required:
+                - name
+                - value
+              properties:
+                name:
+                  type: string
+                  description: Label indicating which port the application is running on.
+                  example: "Porta"
+                value:
+                  type: string
+                  description: Port number the application is currently using.
+                  example: "3000"
+            logLevel:
+              type: object
+              required:
+                - name
+                - value
+              properties:
+                name:
+                  type: string
+                  description: Label indicating the current logging level.
+                  example: "Nível de log"
+                value:
+                  type: string
+                  description: Current log level set for the application.
+                  example: "info"
 tags:
   - name: Application
     description: Core system operations including authentication, health monitoring, and system management
@@ -437,6 +467,12 @@ paths:
                   memoryUsage:
                     name: "Uso de memória"
                     value: "8.1MB"
+                  port:
+                    name: "Porta"
+                    value: "3000"
+                  logLevel:
+                    name: "Nível de log"
+                    value: "info"
         '400':
           description: The server could not process the request due to invalid syntax, malformed data, or missing parameters. Although there was a request on it, the client must correct the request before retrying.
           content:
