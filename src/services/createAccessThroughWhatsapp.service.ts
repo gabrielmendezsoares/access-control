@@ -234,11 +234,22 @@ const validateAccessThroughWhitelist = async (
 };
 
 const normalizeBrazilianPhone = (phone: string): string | null => {
-  const cleanPhone = phone.slice(-11);
-  const areaCodeInt = parseInt(cleanPhone.slice(0, 2));
+  let cleanPhone = phone.startsWith('55') 
+    ? phone.slice(2).slice(-11) 
+    : phone.slice(-11);
+
+  const areaCode = cleanPhone.slice(0, 2);
+
+  let areaCodeInt = parseInt(areaCode);
   
   if (areaCodeInt < 11 && areaCodeInt > 99) {
-    return null;
+    areaCodeInt = parseInt(cleanPhone.slice(1, 3));
+
+    if (areaCodeInt < 11 && areaCodeInt > 99) {
+      return null;
+    } else {
+      cleanPhone = cleanPhone.slice(1);
+    }
   }
 
   switch (cleanPhone.length) {
@@ -247,7 +258,7 @@ const normalizeBrazilianPhone = (phone: string): string | null => {
         return cleanPhone.slice(0, 2) + cleanPhone.slice(3);
       }
 
-      return null;
+      return cleanPhone.slice(0, 10);
 
     case 10:
       return cleanPhone;
@@ -280,8 +291,9 @@ const validateAccessThroughDweller = async (
   }
 
   const httpClientInstance = new HttpClientUtil.HttpClient();
-  const cleanJidCountryCode = jid.split('@')[0].replace(PHONE_REGEX, '').slice(0, 2);
-  const cleanJidWithoutCountryCode = jid.split('@')[0].replace(PHONE_REGEX, '').slice(2);
+  const cleanJid = jid.split('@')[0].replace(PHONE_REGEX, '');
+  const cleanJidCountryCode = cleanJid.slice(0, 2);
+  const cleanJidWithoutCountryCode = cleanJid.slice(2);
 
   let page = 0;
 
@@ -294,14 +306,14 @@ const validateAccessThroughDweller = async (
       (dwellerMap: IDwellerMap.IDwellerMap): boolean => {
         return dwellerMap.phones.some(
           (phoneMap: IPhoneMap.IPhoneMap): boolean => {
-            const cleanPhoneWithoutCountryCode = phoneMap.phone.replace(/\D/g, '').slice(2)
+            const cleanPhone = phoneMap.phone.replace(/\D/g, '');
 
             switch (cleanJidCountryCode) {
               case '55':
-                return cleanJidWithoutCountryCode === normalizeBrazilianPhone(cleanPhoneWithoutCountryCode);
+                return cleanJidWithoutCountryCode === normalizeBrazilianPhone(cleanPhone);
 
               default:
-                return cleanJidWithoutCountryCode === phoneMap.phone;
+                return cleanJid === cleanPhone;
             }
           }
         )

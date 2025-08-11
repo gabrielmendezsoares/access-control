@@ -18,7 +18,6 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "incremental": true,
-    "noEmit": false,
     "skipLibCheck": true
   },
   "ts-node": {
