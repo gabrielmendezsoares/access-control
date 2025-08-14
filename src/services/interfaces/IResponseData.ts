@@ -12,18 +12,27 @@ export interface IGetHealthResponseData {
     cpuUsage: {
       name: string;
       value: string;
+      isListeningModifiedEvent?: boolean;
     };
     memoryUsage: {
       name: string;
       value: string;
+      isListeningModifiedEvent?: boolean;
     };
     port: {
       name: string;
       value: string;
+      isListeningModifiedEvent?: boolean;
+    };
+    testCoverage: {
+      name: string;
+      value: string;
+      isListeningModifiedEvent?: boolean;
     };
     logLevel: {
       name: string;
       value: string;
+      isListeningModifiedEvent?: boolean;
     };
   };
 }
