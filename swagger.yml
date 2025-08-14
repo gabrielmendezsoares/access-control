@@ -144,6 +144,7 @@ components:
             - cpuUsage
             - memoryUsage
             - port
+            - testCoverage
             - logLevel
           properties:
             cpuUsage:
@@ -160,6 +161,10 @@ components:
                   type: string
                   description: Value of CPU usage.
                   example: "8.1%"
+                isListeningModifiedEvent:
+                  type: boolean
+                  description: If monitor should listen for modification events.
+                  example: false
             memoryUsage:
               type: object
               required:
@@ -174,6 +179,10 @@ components:
                   type: string
                   description: Value of memory usage.
                   example: "8.1MB"
+                isListeningModifiedEvent:
+                  type: boolean
+                  description: If monitor should listen for modification events.
+                  example: false
             port:
               type: object
               required:
@@ -188,6 +197,28 @@ components:
                   type: string
                   description: Port number the application is currently using.
                   example: "3000"
+                isListeningModifiedEvent:
+                  type: boolean
+                  description: If monitor should listen for modification events.
+                  example: true
+            testCoverage:
+              type: object
+              required:
+                - name
+                - value
+              properties:
+                name:
+                  type: string
+                  description: Label for test coverage metric.
+                  example: "Cobertura de testes"
+                value:
+                  type: string
+                  description: Value of test coverage.
+                  example: "100%"
+                isListeningModifiedEvent:
+                  type: boolean
+                  description: If monitor should listen for modification events.
+                  example: false
             logLevel:
               type: object
               required:
@@ -202,6 +233,10 @@ components:
                   type: string
                   description: Current log level set for the application.
                   example: "info"
+                isListeningModifiedEvent:
+                  type: boolean
+                  description: If monitor should listen for modification events.
+                  example: true
 tags:
   - name: Application
     description: Core system operations including authentication, health monitoring, and system management
@@ -470,9 +505,14 @@ paths:
                   port:
                     name: "Porta"
                     value: "3000"
+                    isListeningModifiedEvent: true
+                  testCoverage:
+                    name: 'Cobertura de testes'
+                    value: '100%'
                   logLevel:
                     name: "Nível de log"
                     value: "info"
+                    isListeningModifiedEvent: true
         '400':
           description: The server could not process the request due to invalid syntax, malformed data, or missing parameters. Although there was a request on it, the client must correct the request before retrying.
           content:
