@@ -24,11 +24,6 @@ export interface IGetHealthResponseData {
       value: string;
       isListeningModifiedEvent?: boolean;
     };
-    testCoverage: {
-      name: string;
-      value: string;
-      isListeningModifiedEvent?: boolean;
-    };
     logLevel: {
       name: string;
       value: string;
