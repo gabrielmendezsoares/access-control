@@ -23,8 +23,8 @@ Its main strength lies in flexibility: the system supports multiple validation c
 
 ### ⚠️ Prerequisites
 
-- **Node.js** ≥ `20.14.0` — _JavaScript runtime environment_
-- **MySQL** ≥ `8.0` — _Relational database_
+- [**Node.js**](https://nodejs.org/) ≥ `20.14.0` — _JavaScript runtime environment_
+- [**MySQL**](https://www.mysql.com/) ≥ `8.0` — _Relational database_
 
 ### ⚙️ Setup 
 

@@ -122,12 +122,13 @@ const createAccess = async (
             }
           );
           
-          await prisma.access_control_whatsapp_events.create(
+          await prisma.sigma_cloud_access_control_events.create(
             {
               data: {
+                application_type: process.env.APPLICATION_TYPE as string,
                 account: accountMap.accountCode,
                 code,
-                company_id: String(accountMap.companyId),
+                company_id: accountMap.companyId,
                 complement,
                 event_id: eventId,
                 protocol_type: PROTOCOL_TYPE,
@@ -139,12 +140,13 @@ const createAccess = async (
         } catch (error: unknown) {
           loggerUtil.error(error instanceof Error ? error.message : String(error)); 
 
-          await prisma.access_control_whatsapp_events.create(
+          await prisma.sigma_cloud_access_control_events.create(
             {
               data: {
+                application_type: process.env.APPLICATION_TYPE as string,
                 account: accountMap.accountCode,
                 code,
-                company_id: String(accountMap.companyId),
+                company_id: accountMap.companyId,
                 complement,
                 event_id: eventId,
                 protocol_type: PROTOCOL_TYPE,

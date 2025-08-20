@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: 🔐 Access Control
-  version: 2.0.4
+  version: 2.0.5
   description: |
     ## 📋 Overview
 
@@ -22,8 +22,6 @@ info:
 servers:
   - url: http://localhost:3230
     description: Development server
-security:
-  - Bearer: []
 components:
   securitySchemes:
     Basic:
@@ -87,10 +85,12 @@ components:
       properties:
         message:
           type: string
-          description: Human-readable error message
+          description: Human-readable error message.
+          example: "Authentication token has expired."
         suggestion:
           type: string
-          description: Suggested action to resolve the error
+          description: Suggested action to resolve the error.
+          example: "Please sign in again to obtain a new token."
     IGetAuthenticationResponseData:
       type: object
       required:
@@ -110,9 +110,9 @@ components:
               example: "john.doe"
             roleList:
               type: array
+              description: Roles or permissions assigned to the user.
               items:
                 type: string
-              description: Roles or permissions assigned to the user.
               example: ["admin", "user"]
             token:
               type: string
@@ -123,16 +123,6 @@ components:
               format: int64
               description: Token expiration time in milliseconds.
               example: 1726080123123
-    ICreateAccessThroughWhatsAppResponseData:
-      type: object
-      required:
-        - data
-      properties:
-        data:
-          type: string
-          enum: ["OK"]
-          description: Indicator of a successful request.
-          example: "OK"
     IGetHealthResponseData:
       type: object
       required:
@@ -218,6 +208,16 @@ components:
                   type: boolean
                   description: If monitor should listen for modification events.
                   example: true
+    ICreateAccessThroughWhatsAppResponseData:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: string
+          enum: ["OK"]
+          description: Indicator of a successful request.
+          example: "OK"
 tags:
   - name: Application
     description: Core system operations including authentication, health monitoring, and system management
@@ -307,6 +307,8 @@ paths:
       description: |
         Processes WhatsApp messages related to access control validation triggered by QR code scans at physical access points.
         A request was made on it to validate the message content and respond accordingly.
+      security:
+        - Bearer: []
       requestBody:
         required: true
         content:
@@ -468,6 +470,8 @@ paths:
       description: |
         Returns current system health indicators such as CPU and memory usage.
         A request was made on it to monitor the application’s operational status in real time.
+      security:
+        - Bearer: []
       responses:
         '200':
           description: The request was successfully received, understood, and processed. A valid response was generated based on the request made on it.
