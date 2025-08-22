@@ -236,38 +236,34 @@ const validateAccessThroughWhitelist = async (
 };
 
 const normalizeBrazilianPhone = (phone: string): string | null => {
-  let cleanPhone = phone.startsWith('55') 
-    ? phone.slice(2).slice(-11) 
-    : phone.slice(-11);
+  let cleanPhone = phone;
 
-  const areaCode = cleanPhone.slice(0, 2);
+  if (cleanPhone.startsWith('55')) {
+    cleanPhone = cleanPhone.slice(2);
+  }
 
-  let areaCodeInt = parseInt(areaCode);
-  
-  if (areaCodeInt < 11 && areaCodeInt > 99) {
-    areaCodeInt = parseInt(cleanPhone.slice(1, 3));
+  while (cleanPhone.length >= 10) {
+    const areaCode = cleanPhone.slice(0, 2);
+    const areaCodeInt = parseInt(areaCode);
 
-    if (areaCodeInt < 11 && areaCodeInt > 99) {
-      return null;
-    } else {
-      cleanPhone = cleanPhone.slice(1);
+    if (!isNaN(areaCodeInt) && areaCodeInt >= 11 && areaCodeInt <= 99) {
+      break;
     }
+
+    cleanPhone = cleanPhone.slice(1);
   }
 
-  switch (cleanPhone.length) {
-    case 11:
-      if (cleanPhone[2] === '9') {
-        return cleanPhone.slice(0, 2) + cleanPhone.slice(3);
-      }
-
-      return cleanPhone.slice(0, 10);
-
-    case 10:
-      return cleanPhone;
-
-    default:
-      return null;
+  if (cleanPhone.length < 10) {
+    return null;
   }
+
+  cleanPhone = cleanPhone.slice(-11);
+
+  if (cleanPhone.length === 11) {
+    return cleanPhone.slice(0, 2) + cleanPhone.slice(3);
+  }
+
+  return cleanPhone.slice(0, 10);
 };
 
 const validateAccessThroughDweller = async (
@@ -308,7 +304,7 @@ const validateAccessThroughDweller = async (
       (dwellerMap: IDwellerMap.IDwellerMap): boolean => {
         return dwellerMap.phones.some(
           (phoneMap: IPhoneMap.IPhoneMap): boolean => {
-            const cleanPhone = phoneMap.phone.replace(/\D/g, '');
+            const cleanPhone = phoneMap.phone.replace(PHONE_REGEX, '');
 
             switch (cleanJidCountryCode) {
               case '55':
