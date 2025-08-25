@@ -123,6 +123,16 @@ components:
               format: int64
               description: Token expiration time in milliseconds.
               example: 1726080123123
+    ICreateAccessThroughWhatsAppResponseData:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          type: string
+          enum: ["OK"]
+          description: Indicator of a successful request.
+          example: "OK"
     IGetHealthResponseData:
       type: object
       required:
@@ -208,16 +218,6 @@ components:
                   type: boolean
                   description: If monitor should listen for modification events.
                   example: true
-    ICreateAccessThroughWhatsAppResponseData:
-      type: object
-      required:
-        - data
-      properties:
-        data:
-          type: string
-          enum: ["OK"]
-          description: Indicator of a successful request.
-          example: "OK"
 tags:
   - name: Application
     description: Core system operations including authentication, health monitoring, and system management
