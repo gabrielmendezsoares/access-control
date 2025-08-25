@@ -15,7 +15,7 @@ class WhatsAppService {
     message: string
   ): Promise<void> {
     try {
-      await this.httpClientInstance.post(
+      await this.httpClientInstance.post<unknown>(
         `https://v5.chatpro.com.br/${ process.env.CHAT_PRO_INSTANCE_ID }/api/v1/send_message`,
         {
           number: jid,
